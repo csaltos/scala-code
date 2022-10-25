@@ -13,9 +13,10 @@ object Cuadrado extends Figura {
   val nombre = "Cuadrado"
 
   override def pintar() = {
-    println("Pintando cuadrado")
     super.pintar()
+    println("Pintado listo")
   }
+
 }
 
 object Circulo extends Figura {
