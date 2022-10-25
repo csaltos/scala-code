@@ -19,4 +19,6 @@ object EjemploCaseClassesApp extends App {
     println("Son diferentes")
   }
 
+  Reporte.reportar()
+
 }
