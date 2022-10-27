@@ -5,6 +5,17 @@ case object VuelvaJugar extends Resultado
 
 object Loteria {
 
+  def mensajeResultado(resultado: Resultado): String = {
+    resultado match {
+      case Ganador(numero) =>
+        "Ganador con el numero " + numero
+      case Casi(numero) =>
+        "Casi gana con el numero " + numero
+      case VuelvaJugar =>
+        "Vuelva a jugar"
+    }
+  }
+
   def ejecutar(numero: Double): Resultado = {
     if (numero > 0.9) {
       Ganador(numero)
@@ -19,7 +30,10 @@ object Loteria {
 object EjemploLoteriaApp extends App {
   println("Bienvenido al ejemplo de loteria")
   val numero = math.random()
-  Loteria.ejecutar(numero) match {
+  val resultado = Loteria.ejecutar(numero)
+  val mensaje = Loteria.mensajeResultado(resultado)
+  println(mensaje)
+  resultado match {
     case Ganador(numero) =>
       println("Ganador registrado en base de datos " + numero)
     case Casi(numero) =>
