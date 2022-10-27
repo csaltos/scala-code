@@ -1,44 +1,20 @@
-sealed trait Resultado
-case class Ganador(numero: Double) extends Resultado
-case class Casi(numero: Double) extends Resultado
-case object VuelvaJugar extends Resultado
-
-object Loteria {
-
-  def mensajeResultado(resultado: Resultado): String = {
-    resultado match {
-      case Ganador(numero) =>
-        "Ganador con el numero " + numero
-      case Casi(numero) =>
-        "Casi gana con el numero " + numero
-      case VuelvaJugar =>
-        "Vuelva a jugar"
-    }
-  }
-
-  def ejecutar(numero: Double): Resultado = {
-    if (numero > 0.9) {
-      Ganador(numero)
-    } else if (numero > 0.7) {
-      Casi(numero)
-    } else {
-      VuelvaJugar
-    }
-  }
-}
+import com.loteria._
 
 object EjemploLoteriaApp extends App {
   println("Bienvenido al ejemplo de loteria")
   val numero = math.random()
-  val resultado = Loteria.ejecutar(numero)
-  val mensaje = Loteria.mensajeResultado(resultado)
-  println(mensaje)
-  resultado match {
-    case Ganador(numero) =>
+  Loteria.ejecutar(numero) match {
+    case resultado @ GanadorMayor(numero) =>
+      println(resultado.mensaje)
+      println("Ganador registrado en base de datos premium " + numero)
+    case resultado @ Ganador(numero) =>
+      println(resultado.mensaje)
       println("Ganador registrado en base de datos " + numero)
-    case Casi(numero) =>
+    case resultado @ Casi(numero) =>
+      println(resultado.mensaje)
       println("Guardando en otra tabla " + numero)
-    case VuelvaJugar =>
+    case resultado @ VuelvaJugar =>
+      println(resultado.mensaje)
       println("Sin guardado en base de datos")
   }
 
