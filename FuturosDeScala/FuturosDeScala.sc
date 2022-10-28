@@ -6,6 +6,7 @@ import scala.concurrent.impl.Promise
 def getTotalVenta(codigoDeUsuario: String): Future[Double] = {
   Future {
     Thread.sleep(2000)
+    throw new IllegalStateException("Simulando un error")
     1000.0
   }
 }
@@ -13,23 +14,26 @@ def getTotalVenta(codigoDeUsuario: String): Future[Double] = {
 def guardarEnBaseDeDatos(totalVenta: Double): Future[Boolean] = {
   Future {
     Thread.sleep(2000)
+    2000.0 / totalVenta
     true
   }
 }
 
-val valorFuturo = getTotalVenta("123420") flatMap { resultado =>
+def valorFuturo = getTotalVenta("123420") flatMap { resultado =>
   guardarEnBaseDeDatos(resultado)
 }
 
-valorFuturo recover {
+val resultadoFuturo: Future[Boolean] = valorFuturo recover {
   case exception =>
     //log.error("Error en calcular el total de venta", exception)
-    0.0
+    false
 }
 
-valorFuturo recoverWith  {
+val resultado = Await.result(resultadoFuturo, Duration.fromNanos(10000000000L))
+
+val resultadoFuturo2: Future[Boolean] = valorFuturo recoverWith {
   case exception =>
-    getTotalVenta("123420")
+    valorFuturo
 }
 
 val valor = Await.result(valorFuturo, Duration.Inf)
