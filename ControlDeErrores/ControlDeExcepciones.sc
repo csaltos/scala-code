@@ -1,16 +1,25 @@
 import scala.util.{Failure, Success, Try}
 
-def procesar(numero: String): String = {
-  val numeroDeVerdad = Try(numero.toInt)
-  numeroDeVerdad match {
-    case Failure(exception) =>
-      // log.error("Procesado con valor erróneo", exception)
-      "Número inválido, por favor reintente"
-    case Success(valor) =>
-      "El valor procesado es " + (valor * 2)
-  }
+def procesar(numero: String): Try[Int] = {
+  Try(numero.toInt) map (n => n * 2)
 }
 
-procesar("3")
+def procesar2(numeroDeVerdad: Int): Try[Int] = {
+  Try(20 / numeroDeVerdad)
+}
 
-procesar("pepe")
+def procesar3(numero: Int): Try[Int] = {
+  Try(numero * 100)
+}
+
+procesar("hola") flatMap procesar2 flatMap procesar3 map { resultado =>
+  println("El resultado es: " + resultado)
+}
+
+procesar("3") flatMap { resultado =>
+  procesar2(resultado) flatMap { resultado2 =>
+    procesar3(resultado2) map { resultado3 =>
+      resultado3 + 1000
+    }
+  }
+}
