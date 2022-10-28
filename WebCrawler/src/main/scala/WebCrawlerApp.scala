@@ -22,14 +22,32 @@ object WebCrawlerApp extends App {
     }
   }
 
+  for {
+    r1 <- load("Yahoo", "https://www.yahoo.com/")
+    r2 <- load("Google", "https://www.google.com/")
+    r3 <- load("IBM", "https://www.ibm.com/")
+  } yield {
+    if (r1 && r2 && r3) {
+      println("Completo")
+    } else {
+      println("Fallido")
+    }
+  }
+
+  load("Yahoo", "https://www.yahoo.com/") flatMap { _ =>
+    load("Google", "https://www.google.com/") flatMap { _ =>
+      load("IBM", "https://www.ibm.com/")
+    }
+  }
+
   val resultados = Seq(
     load("Yahoo", "https://www.yahoo.com/"),
     load("Google", "https://www.google.com/"),
     load("IBM", "https://www.ibm.com/")
   )
 
-  Future.sequence(resultados)
+  val completado = Future.sequence(resultados)
 
-  Await.ready(Future.never, Duration.Inf)
+  Await.ready(completado, Duration.Inf)
 
 }
